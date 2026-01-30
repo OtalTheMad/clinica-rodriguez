@@ -8,4 +8,16 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="contrasena.png" />
+    <None Remove="logo.png" />
+    <None Remove="usuario.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="contrasena.png" />
+    <Resource Include="logo.png" />
+    <Resource Include="usuario.png" />
+  </ItemGroup>
+
 </Project>
