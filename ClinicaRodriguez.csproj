@@ -23,9 +23,8 @@
   <ItemGroup>
     <Folder Include="Modelos\" />
     <Folder Include="Docs\" />
-    <Folder Include="Recursos\iconos\" />
+    <Folder Include="Helpers\" />
     <Folder Include="VistaModelos\" />
-    <Folder Include="Vistas\" />
   </ItemGroup>
 
 </Project>
