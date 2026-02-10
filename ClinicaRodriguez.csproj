@@ -11,20 +11,29 @@
   <ItemGroup>
     <None Remove="contrasena.png" />
     <None Remove="logo.png" />
+    <None Remove="Recursos\iconos\contrasena.png" />
+    <None Remove="Recursos\iconos\usuario.png" />
+    <None Remove="Recursos\img\logo_1.png" />
     <None Remove="usuario.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="contrasena.png" />
     <Resource Include="logo.png" />
+    <Resource Include="Recursos\iconos\contrasena.png" />
+    <Resource Include="Recursos\iconos\usuario.png" />
+    <Resource Include="Recursos\img\logo_1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="usuario.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modelos\" />
     <Folder Include="Docs\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="VistaModelos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
   </ItemGroup>
 
 </Project>

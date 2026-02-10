@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClinicaRodriguez.VistaModelos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,14 @@ namespace ClinicaRodriguez.Vistas
         public Login()
         {
             InitializeComponent();
+        }
+
+        private void userClave_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is LoginVM VistaModelo)
+            {
+                VistaModelo._clave = ((PasswordBox)sender).Password;
+            }
         }
     }
 }
