@@ -1,4 +1,5 @@
-﻿using ClinicaRodriguez.VistaModelos;
+﻿using ClinicaRodriguez.Modelos;
+using ClinicaRodriguez.VistaModelos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,22 +17,16 @@ using System.Windows.Shapes;
 namespace ClinicaRodriguez.Vistas
 {
     /// <summary>
-    /// Lógica de interacción para Login.xaml
+    /// Lógica de interacción para MenuPrincipal.xaml
     /// </summary>
-    public partial class Login : Window
+    public partial class MenuPrincipalGeneral : Window
     {
-        public Login()
+        public Usuario UsuarioActual { get; set; }
+        public MenuPrincipalGeneral(Usuario _usuario)
         {
             InitializeComponent();
-            DataContext = new LoginVM(this);
-        }
-
-        private void userClave_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is LoginVM VistaModelo)
-            {
-                VistaModelo._clave = ((PasswordBox)sender).Password;
-            }
+            UsuarioActual = _usuario;
+            this.DataContext = this;
         }
     }
 }

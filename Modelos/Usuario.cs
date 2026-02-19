@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClinicaRodriguez.Modelos
 {
-    class Usuario
+    public class Usuario
     {
         public int ID { get; set; }
         public string Nombre { get; set; }

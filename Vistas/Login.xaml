@@ -6,13 +6,8 @@
         xmlns:local="clr-namespace:ClinicaRodriguez.Vistas"
         xmlns:VistaModelos="clr-namespace:ClinicaRodriguez.VistaModelos"
         mc:Ignorable="d"
-        Title="Iniciar Sesión" Height="450" Width="800">
+        Title="Iniciar Sesión" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
 
-    <Window.DataContext>
-        <VistaModelos:LoginVM/>
-    </Window.DataContext>
-
-    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>

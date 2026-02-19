@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ClinicaRodriguez.VistaModelos
@@ -15,16 +16,18 @@ namespace ClinicaRodriguez.VistaModelos
     internal class LoginVM
     {
         private readonly UsuarioRepositorio _repositorio;
+        private readonly Window _ventanaLogin;
         public string _nombreUsuario { get; set; }
         public string _clave { get; set; }
 
         public ICommand ComandoLogin { get; }
 
 
-        public LoginVM()
+        public LoginVM(Window ventanaLogin)
         {
             _repositorio = new UsuarioRepositorio();
             ComandoLogin = new AsyncRelayCommand(async _ => await LoginAsync());
+            _ventanaLogin = ventanaLogin;
         }
 
         private async Task LoginAsync()
@@ -34,7 +37,10 @@ namespace ClinicaRodriguez.VistaModelos
 
             if (usuario != null)
             {
-                System.Windows.MessageBox.Show("¡Inicio de sesión exitoso!");
+                Console.WriteLine("¡Inicio de sesión exitoso!");
+                var menuPrincipal = new MenuPrincipalGeneral(usuario);
+                menuPrincipal.Show();
+                _ventanaLogin.Close();
             }
             else
             {
