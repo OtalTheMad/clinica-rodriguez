@@ -17,7 +17,7 @@ namespace ClinicaRodriguez.Helpers
                          Integrated Security=true;
                          TrustServerCertificate=true;";
             #else
-                return @"Server=localhost\SQLEXPRESS;
+                return @"Server=localhost;
                          Database=ProdClinicaRodriguez;
                          Integrated Security=true;
                          TrustServerCertificate=true;";

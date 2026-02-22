@@ -1,32 +1,21 @@
 ﻿using ClinicaRodriguez.Modelos;
 using ClinicaRodriguez.VistaModelos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ClinicaRodriguez.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para MenuPrincipal.xaml
-    /// </summary>
     public partial class MenuPrincipalGeneral : Window
     {
-        public Usuario UsuarioActual { get; set; }
-        public MenuPrincipalGeneral(Usuario _usuario)
+        public MenuPrincipalGeneral(Usuario usuario)
         {
             InitializeComponent();
-            UsuarioActual = _usuario;
-            this.DataContext = this;
+
+            string connectionString = @"Server=localhost;
+                         Database=DevClinicaRodriguez;
+                         Integrated Security=true;
+                         TrustServerCertificate=true;";
+
+            DataContext = new MenuPrincipalVM(usuario, connectionString);
         }
     }
 }
