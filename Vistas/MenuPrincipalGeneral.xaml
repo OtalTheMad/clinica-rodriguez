@@ -36,7 +36,7 @@
             <TextBlock Text="Menú" Foreground="White" FontSize="18" FontWeight="Bold" Padding="15,20,15,10"/>
             <Separator Background="#FF171D67" Height="1"/>
 
-            <Button Content="Pacientes" Margin="10,15,10,5" Height="41" Width="176"/>
+            <Button Content="Pacientes" Command="{Binding NavigateCommand}" CommandParameter="Pacientes" Margin="10,15,10,5" Height="41" Width="176"/>
             <Button Content="Citas" Margin="10,5,10,5" Height="41" Width="176"/>
             <Button Content="Especialistas" Margin="10,5,10,5" Height="41" Width="176"/>
             <Button Content="Expedientes" Margin="10,5,10,5" Height="41" Width="176"/>
@@ -57,7 +57,7 @@
 
             </Border>
 
-            <Frame x:Name="ContenidoPrincipal" Grid.Row="1" NavigationUIVisibility="Hidden"/>
+            <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
         </Grid>
     </Grid>
 </Window>
