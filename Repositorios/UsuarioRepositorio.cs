@@ -22,7 +22,7 @@ namespace ClinicaRodriguez.Repositorios
                 {
                     await conn.OpenAsync();
 
-                    var query = @"SELECT ID, NombreCompleto, NombreUsuario, EsAdmin 
+                    var query = @"SELECT ID, NombreCompleto, NombreUsuario, EsAdmin, RolID
                              FROM Usuarios
                              WHERE NombreUsuario = @Usuario AND Clave = @Clave AND EsActivo = 1";
 
@@ -40,7 +40,8 @@ namespace ClinicaRodriguez.Repositorios
                                     ID = reader.GetInt32(0),
                                     NombreCompleto = reader.GetString(1),
                                     NombreUsuario = reader.GetString(2),
-                                    EsAdmin = reader.GetBoolean(3)
+                                    EsAdmin = reader.GetBoolean(3),
+                                    RolID = reader.GetInt32(4)
                                 };
                             }
                         }

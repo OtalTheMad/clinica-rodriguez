@@ -1,0 +1,464 @@
+<!-- Vistas/Expedientes.xaml -->
+<UserControl x:Class="ClinicaRodriguez.Vistas.Expedientes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:convertidores="clr-namespace:ClinicaRodriguez.Helpers"
+             mc:Ignorable="d"
+             d:DesignWidth="1150"
+             d:DesignHeight="720"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <convertidores:FechaNulaConverter x:Key="FechaNulaConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        <Style x:Key="TituloSeccion" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#171D67"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="LabelCampo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="CajaTexto" TargetType="TextBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="BorderBrush" Value="#D0D5DD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="CajaTextoGrande" TargetType="TextBox" BasedOn="{StaticResource CajaTexto}">
+            <Setter Property="Height" Value="95"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+
+        <Style x:Key="BotonPrincipal" TargetType="Button">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Background" Value="#171D67"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style x:Key="BotonLateral" TargetType="Button">
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Margin" Value="8,4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#F3F5F9">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra superior -->
+
+        <Border Grid.Row="0" Background="White"
+        CornerRadius="8"
+        Padding="18"
+        Margin="0,0,0,14"
+        BorderBrush="#E5E7EB"
+        BorderThickness="1"
+        Visibility="{Binding MostrarSelectorPaciente, Converter={StaticResource BoolToVisibilityConverter}}">
+
+            <StackPanel>
+                <TextBlock Text="Seleccione un paciente"
+                   FontSize="16"
+                   FontWeight="SemiBold"
+                   Foreground="#171D67"
+                   Margin="0,0,0,12"/>
+
+                <DockPanel Margin="0,0,0,12">
+                    <Button DockPanel.Dock="Right"
+                    Content="Buscar"
+                    Width="100"
+                    Margin="8,0,0,0"
+                    Command="{Binding BuscarPacienteCommand}" TabIndex="2"/>
+
+                    <TextBox Text="{Binding FiltroPaciente, UpdateSourceTrigger=PropertyChanged}"
+                     Height="32"
+                     VerticalContentAlignment="Center"
+                     Padding="8,0" TabIndex="1"/>
+                </DockPanel>
+
+                <DataGrid ItemsSource="{Binding PacientesEncontrados}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  Height="100">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nombre"
+                                    Binding="{Binding Nombre}"
+                                    Width="*"/>
+                        
+                        <DataGridTextColumn Header="Apellido"
+                                    Binding="{Binding Apellido}"
+                                    Width="*"/>
+                        
+                        <DataGridTextColumn Header="DNI"
+                                    Binding="{Binding DNI}"
+                                    Width="*"/>
+
+                        <DataGridTextColumn Header="Teléfono"
+                                    Binding="{Binding TelefonoPrimario}"
+                                    Width="140"/>
+
+                        <DataGridTemplateColumn Header="Acción" Width="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Usar"
+                                    Command="{Binding DataContext.AsociarPacienteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="0,0,0,1"
+                Padding="14">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Button Content="Guardar"
+                            Style="{StaticResource BotonPrincipal}"
+                            Command="{Binding GuardarExpedienteCommand}" TabIndex="3"/>
+
+                    <Button Content="Adjuntar documento"
+                            Style="{StaticResource BotonPrincipal}"
+                            Command="{Binding AdjuntarDocumentoCommand}" TabIndex="4"/>
+
+                    <Button Content="Salir"
+                            Height="34"
+                            Padding="14,0"
+                            Command="{Binding SalirCommand}" TabIndex="1"/>
+                </StackPanel>
+
+                <TextBlock Text="{Binding TituloExpediente}"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="#171D67"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"/>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="16" MinHeight="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="320"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Menú lateral del expediente -->
+            <Border Grid.Column="0"
+                    Background="#171D67"
+                    CornerRadius="8"
+                    Margin="0,0,14,0">
+                <StackPanel Margin="0,12">
+                    <TextBlock Text="Expediente"
+                               Foreground="White"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Margin="16,0,0,16"/>
+
+                    <Button Content="Identificación" Style="{StaticResource BotonLateral}" Click="BtnIdentificacion_Click" TabIndex="6"/>
+                    <Button Content="Signos vitales" Style="{StaticResource BotonLateral}" Click="BtnSignosVitales_Click" TabIndex="7"/>
+                    <Button Content="Odontología"
+                            Style="{StaticResource BotonLateral}"
+                            Visibility="{Binding EsOdontologo, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Click="BtnOdontologia_Click" TabIndex="8"/>
+                    <Button Content="Historial" Style="{StaticResource BotonLateral}" Click="BtnHistorial_Click" TabIndex="9"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Formulario principal -->
+            <ScrollViewer x:Name="svExpediente"
+              Grid.Column="1"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled"
+              CanContentScroll="False">
+                <StackPanel>
+
+                    <!-- Datos del paciente -->
+                    <Border x:Name="SeccionIdentificacion"
+                            Background="White"
+                            CornerRadius="8"
+                            Padding="18"
+                            Margin="0,0,0,14"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Datos del paciente" Style="{StaticResource TituloSeccion}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,10">
+                                    <TextBlock Text="Nombre" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding PacienteSeleccionado.Nombre}" Style="{StaticResource CajaTexto}" IsReadOnly="True" TabIndex="10"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,12,10">
+                                    <TextBlock Text="Correo" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding PacienteSeleccionado.Correo}" Style="{StaticResource CajaTexto}" IsReadOnly="True" TabIndex="11"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
+                                    <TextBlock Text="Edad" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding PacienteSeleccionado.Edad}" Style="{StaticResource CajaTexto}" IsReadOnly="True" TabIndex="12"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,12,0">
+                                    <TextBlock Text="Fecha nacimiento" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding PacienteSeleccionado.FechaNacimiento, Converter={StaticResource FechaNulaConverter}}" Style="{StaticResource CajaTexto}" IsReadOnly="True" TabIndex="13"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,12,0">
+                                    <TextBlock Text="Teléfono" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding PacienteSeleccionado.TelefonoPrimario}" Style="{StaticResource CajaTexto}" IsReadOnly="True" TabIndex="14"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="2">
+                                    <TextBlock Text="Expediente No." Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding NumeroExpediente, Mode=OneWay}" Style="{StaticResource CajaTexto}" IsReadOnly="True" TabIndex="14"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Signos vitales -->
+                    <Border x:Name="SeccionSignosVitales"
+                            Background="White"
+                            CornerRadius="8"
+                            Padding="18"
+                            Margin="0,0,0,14"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Signos vitales" Style="{StaticResource TituloSeccion}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,10">
+                                    <TextBlock Text="Servicio" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.Servicio, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}" TabIndex="16"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,12,10">
+                                    <TextBlock Text="Presión arterial" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.PresionArterial, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}" TabIndex="17"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
+                                    <TextBlock Text="Temperatura" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.Temperatura, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}" TabIndex="18"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,12,10">
+                                    <TextBlock Text="Frecuencia respiratoria" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.FrecuenciaRespiratoria, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}" TabIndex="19"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,12,10">
+                                    <TextBlock Text="Frecuencia cardíaca" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.FrecuenciaCardiaca, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}" TabIndex="20"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,10">
+                                    <TextBlock Text="Peso" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding PesoTexto, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}" TabIndex="20"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,12,0">
+                                    <TextBlock Text="Altura" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding TallaTexto, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,12,0">
+                                    <TextBlock Text="IMC" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding IMCTexto, Mode=OneWay}" Style="{StaticResource CajaTexto}" IsReadOnly="True"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Sección odontológica: solo visible para RolID = 2 -->
+                    <Border x:Name="SeccionOdontologia"
+                            Background="White"
+                            CornerRadius="8"
+                            Padding="18"
+                            Margin="0,0,0,14"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1"
+                            Visibility="{Binding EsOdontologo, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="Información odontológica" Style="{StaticResource TituloSeccion}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,10">
+                                    <TextBlock Text="Tipo de mordida" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.TipoMordida, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,10">
+                                    <TextBlock Text="Prótesis dentales" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.ProtesisDentales, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,12,10">
+                                    <TextBlock Text="Enfermedades peridontales" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.EnfermedadesPeridontales, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,10">
+                                    <TextBlock Text="Último tratamiento dental" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.UltimaTratamientoDental, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+                                    <TextBlock Text="Odontograma" Style="{StaticResource LabelCampo}"/>
+                                    <TextBox Text="{Binding ExpedienteSeleccionado.Odontograma, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource CajaTextoGrande}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Historial -->
+                    <Border x:Name="SeccionHistorial"
+                            Background="White"
+                            CornerRadius="8"
+                            Padding="18"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Notas del historial" Style="{StaticResource TituloSeccion}"/>
+                            <TextBox Text="{Binding ExpedienteSeleccionado.NotasHistorial, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="120"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     Padding="8"
+                                     BorderBrush="#D0D5DD"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Documentos adjuntos -->
+            <Border x:Name="SeccionDocumentos"
+                    Grid.Column="2"
+                    Background="White"
+                    CornerRadius="8"
+                    Padding="16"
+                    Margin="14,0,0,0"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Documentos adjuntos" Style="{StaticResource TituloSeccion}"/>
+
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding DocumentosAdjuntos}"
+                              SelectedItem="{Binding DocumentoSeleccionado, Mode=TwoWay}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              BorderBrush="#E5E7EB"
+                              BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Archivo" Binding="{Binding NombreArchivo}" Width="*"/>
+                            <DataGridTextColumn Header="Tipo" Binding="{Binding TipoArchivo}" Width="70"/>
+                            <DataGridTextColumn Header="Fecha" Binding="{Binding CreadoEn, StringFormat=dd/MM/yyyy}" Width="90"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                        <Button Content="Abrir"
+                                Height="32"
+                                Padding="12,0"
+                                Margin="0,0,8,0"
+                                Command="{Binding AbrirDocumentoCommand}"
+                                CommandParameter="{Binding DocumentoSeleccionado}"/>
+
+                        <Button Content="Eliminar"
+                                Height="32"
+                                Padding="12,0"
+                                Command="{Binding EliminarDocumentoCommand}"
+                                CommandParameter="{Binding DocumentoSeleccionado}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
