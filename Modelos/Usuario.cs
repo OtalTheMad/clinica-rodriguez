@@ -16,5 +16,9 @@ namespace ClinicaRodriguez.Modelos
         public string Clave { get; set; }
         public bool EsAdmin { get; set; }
         public bool EsActivo { get; set; }
+
+
+        public int RolID { get; set; }
+        public string RolNombre { get; set; }
     }
 }

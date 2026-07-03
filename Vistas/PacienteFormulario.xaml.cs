@@ -2,9 +2,9 @@
 
 namespace ClinicaRodriguez.Vistas
 {
-    public partial class Pacientes : UserControl
+    public partial class PacienteFormulario : UserControl
     {
-        public Pacientes()
+        public PacienteFormulario()
         {
             InitializeComponent();
         }

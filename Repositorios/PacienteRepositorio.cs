@@ -12,6 +12,74 @@ public class PacienteRepositorio
         _connectionString = connectionString;
     }
 
+    public async Task<int> CrearAsync(Paciente paciente)
+    {
+        const string query = @"
+        INSERT INTO dbo.Pacientes
+        (
+            Nombre,
+            Apellido,
+            DNI,
+            Correo,
+            FechaNacimiento,
+            Residencia,
+            Ocupacion,
+            TelefonoPrimario,
+            UltimaCita,
+            TipoDeCita,
+            ProximaCita,
+            TipoProximaCita
+        )
+        OUTPUT INSERTED.ID
+        VALUES
+        (
+            @Nombre,
+            @Apellido,
+            @DNI,
+            @Correo,
+            @FechaNacimiento,
+            @Residencia,
+            @Ocupacion,
+            @TelefonoPrimario,
+            @UltimaCita,
+            @TipoDeCita,
+            @ProximaCita,
+            @TipoProximaCita
+        );";
+
+        using var conexion = new SqlConnection(_connectionString);
+        using var comando = new SqlCommand(query, conexion);
+
+        comando.Parameters.AddWithValue("@Nombre", ValorONull(paciente.Nombre));
+        comando.Parameters.AddWithValue("@Apellido", ValorONull(paciente.Apellido));
+        comando.Parameters.AddWithValue("@DNI", ValorONull(paciente.DNI));
+        comando.Parameters.AddWithValue("@Correo", ValorONull(paciente.Correo));
+        comando.Parameters.AddWithValue("@FechaNacimiento", ValorONull(paciente.FechaNacimiento));
+        comando.Parameters.AddWithValue("@Residencia", ValorONull(paciente.Residencia));
+        comando.Parameters.AddWithValue("@Ocupacion", ValorONull(paciente.Ocupacion));
+        comando.Parameters.AddWithValue("@TelefonoPrimario", ValorONull(paciente.TelefonoPrimario));
+        comando.Parameters.AddWithValue("@UltimaCita", ValorONull(paciente.UltimaCita));
+        comando.Parameters.AddWithValue("@TipoDeCita", ValorONull(paciente.TipoDeCita));
+        comando.Parameters.AddWithValue("@ProximaCita", ValorONull(paciente.ProximaCita));
+        comando.Parameters.AddWithValue("@TipoProximaCita", ValorONull(paciente.TipoProximaCita));
+
+        await conexion.OpenAsync();
+
+        var idGenerado = await comando.ExecuteScalarAsync();
+
+        return Convert.ToInt32(idGenerado);
+    }
+
+    private static object ValorONull(string valor)
+    {
+        return string.IsNullOrWhiteSpace(valor) ? DBNull.Value : valor.Trim();
+    }
+
+    private static object ValorONull(DateTime fecha)
+    {
+        return fecha == DateTime.MinValue ? DBNull.Value : fecha;
+    }
+
     public async Task<List<Paciente>> ObtenerTodosAsync()
     {
         var pacientes = new List<Paciente>();
