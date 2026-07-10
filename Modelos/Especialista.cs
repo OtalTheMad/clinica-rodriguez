@@ -17,7 +17,15 @@ namespace ClinicaRodriguez.Modelos
         public int CreadoPor { get; set; }
         public int? UsuarioId { get; set; }
 
+        public string NombreUsuario { get; set; }
+        public string ClaveTemporal { get; set; }
+        public int RolId { get; set; }
+        public bool EsUsuarioActivo { get; set; }
+
         public string NombreCompleto =>
             $"{Nombre} {Apellido}".Trim();
+
+        public string EstadoUsuarioTexto =>
+            EsUsuarioActivo ? "Activo" : "Inactivo";
     }
 }

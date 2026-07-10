@@ -29,6 +29,10 @@
             <vistas:Citas/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type VistaModelos:EspecialistasVM}">
+            <vistas:Especialistas/>
+        </DataTemplate>
+
     </Window.Resources>
     
     

@@ -15,6 +15,53 @@ namespace ClinicaRodriguez.Repositorios
             _connectionString = connectionString;
         }
 
+        public async Task<List<Cita>> ObtenerHistorialPorPacienteYEspecialistaAsync(
+    int pacienteId,
+    int especialistaId)
+        {
+            const string query = @"
+        SELECT
+            c.ID,
+            c.PacienteID,
+            c.EspecialistaID,
+            c.FechaCita,
+            c.Estado,
+            c.Duracion,
+            c.Notas,
+            c.CreadoEn,
+            c.CreadoPor,
+            p.Nombre AS NombrePaciente,
+            p.Apellido AS ApellidoPaciente,
+            e.Nombre AS NombreEspecialista,
+            e.Apellido AS ApellidoEspecialista
+        FROM dbo.Citas c
+        INNER JOIN dbo.Pacientes p ON p.ID = c.PacienteID
+        INNER JOIN dbo.Especialistas e ON e.ID = c.EspecialistaID
+        WHERE c.PacienteID = @PacienteID
+          AND c.EspecialistaID = @EspecialistaID
+          AND c.FechaCita < SYSDATETIME()
+        ORDER BY c.FechaCita DESC;";
+
+            var citas = new List<Cita>();
+
+            using var conexion = new SqlConnection(_connectionString);
+            using var comando = new SqlCommand(query, conexion);
+
+            comando.Parameters.AddWithValue("@PacienteID", pacienteId);
+            comando.Parameters.AddWithValue("@EspecialistaID", especialistaId);
+
+            await conexion.OpenAsync();
+
+            using var reader = await comando.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                citas.Add(MapearCita(reader));
+            }
+
+            return citas;
+        }
+
         public async Task<List<Cita>> ObtenerPorEspecialistaYRangoAsync(
             int especialistaId,
             DateTime fechaInicio,

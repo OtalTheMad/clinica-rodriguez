@@ -23,6 +23,8 @@ namespace ClinicaRodriguez.VistaModelos
         private readonly ExpedienteRepositorio _expedienteRepositorio;
         private readonly PacienteRepositorio _pacienteRepositorio;
         private readonly DocumentoAdjuntoRepositorio _documentoAdjuntoRepositorio;
+        private readonly CitaRepositorio _citaRepositorio;
+        private readonly EspecialistaRepositorio _especialistaRepositorio;
 
         private string _temperaturaTexto;
         private string _pesoTexto;
@@ -31,6 +33,7 @@ namespace ClinicaRodriguez.VistaModelos
 
         public ObservableCollection<Paciente> PacientesEncontrados { get; set; }
         public ObservableCollection<DocumentoAdjunto> DocumentosAdjuntos { get; set; }
+        public ObservableCollection<Cita> HistorialCitas { get; set; }
 
         private Paciente _pacienteSeleccionado;
         public Paciente PacienteSeleccionado
@@ -186,9 +189,12 @@ namespace ClinicaRodriguez.VistaModelos
             _expedienteRepositorio = new ExpedienteRepositorio(_connectionString);
             _pacienteRepositorio = new PacienteRepositorio(_connectionString);
             _documentoAdjuntoRepositorio = new DocumentoAdjuntoRepositorio(_connectionString);
+            _citaRepositorio = new CitaRepositorio(_connectionString);
+            _especialistaRepositorio = new EspecialistaRepositorio(_connectionString);
 
             PacientesEncontrados = new ObservableCollection<Paciente>();
             DocumentosAdjuntos = new ObservableCollection<DocumentoAdjunto>();
+            HistorialCitas = new ObservableCollection<Cita>();
 
             BuscarPacienteCommand = new AsyncRelayCommand(async _ => await BuscarPacientesAsync());
             AsociarPacienteCommand = new RelayCommand<Paciente>(AsociarPaciente);
@@ -291,6 +297,7 @@ namespace ClinicaRodriguez.VistaModelos
                 );
 
                 await CargarDocumentosAdjuntosAsync();
+                await CargarHistorialCitasAsync();
             }
             catch (Exception ex)
             {
@@ -469,6 +476,36 @@ namespace ClinicaRodriguez.VistaModelos
             }
         }
 
+        private async Task CargarHistorialCitasAsync()
+        {
+            try
+            {
+                HistorialCitas.Clear();
+
+                if (PacienteSeleccionado == null)
+                    return;
+
+                var especialistaActual = await _especialistaRepositorio.ObtenerPorUsuarioIdAsync(_usuarioActual.ID);
+
+                if (especialistaActual == null)
+                    return;
+
+                var citas = await _citaRepositorio.ObtenerHistorialPorPacienteYEspecialistaAsync(
+                    PacienteSeleccionado.Id,
+                    especialistaActual.Id
+                );
+
+                foreach (var cita in citas)
+                {
+                    HistorialCitas.Add(cita);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar historial de citas: {ex.Message}");
+            }
+        }
+
         private void AbrirDocumento(DocumentoAdjunto documento)
         {
             try
@@ -560,6 +597,7 @@ namespace ClinicaRodriguez.VistaModelos
 
             PacientesEncontrados.Clear();
             DocumentosAdjuntos.Clear();
+            HistorialCitas.Clear();
 
             OnPropertyChanged(nameof(NumeroExpediente));
         }
