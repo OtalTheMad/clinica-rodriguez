@@ -1,0 +1,269 @@
+﻿<UserControl x:Class="ClinicaRodriguez.Vistas.Especialistas"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <Style x:Key="Titulo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#171D67"/>
+        </Style>
+
+        <Style x:Key="Subtitulo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#555"/>
+        </Style>
+
+        <Style x:Key="LabelCampo" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="CajaTexto" TargetType="TextBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#D0D5DD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="BotonPrincipal" TargetType="Button">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Background" Value="#171D67"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#F3F5F9" Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="White"
+                CornerRadius="8"
+                Padding="16"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                Margin="0,0,0,14">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="220"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,14">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="Gestión de especialistas"
+                                   Style="{StaticResource Titulo}"/>
+                        <TextBlock Text="Crea, actualiza, busca y desactiva especialistas del sistema"
+                                   Foreground="#777"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBox Text="{Binding FiltroBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="260"
+                                 Height="32"
+                                 Padding="8,4"
+                                 VerticalContentAlignment="Center"
+                                 Margin="0,0,8,0"/>
+
+                        <Button Content="Buscar"
+                                Width="80"
+                                Height="32"
+                                Margin="0,0,8,0"
+                                Command="{Binding BuscarCommand}"/>
+
+                        <Button Content="Nuevo"
+                                Width="80"
+                                Height="32"
+                                Command="{Binding NuevoCommand}"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <Grid Grid.Row="1" Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Text="Nombre" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"
+                                 Margin="0,0,0,8"/>
+
+                        <TextBlock Text="Apellido" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding Apellido, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                        <TextBlock Text="Especialidad" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding Especialidad, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"
+                                 Margin="0,0,0,8"/>
+
+                        <TextBlock Text="Graduado en / registro" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding GraduadoEn, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                        <TextBlock Text="Nombre de usuario" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding NombreUsuario, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"
+                                 Margin="0,0,0,8"/>
+
+                        <TextBlock Text="Clave temporal" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding ClaveTemporal, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3">
+                        <TextBlock Text="Rol del usuario" Style="{StaticResource LabelCampo}"/>
+                        <ComboBox ItemsSource="{Binding RolesDisponibles}"
+                                  SelectedValue="{Binding RolIdSeleccionado, Mode=TwoWay}"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Nombre"
+                                  Height="32"
+                                  Margin="0,0,0,22"/>
+
+                        <Button Content="{Binding TextoBotonGuardar}"
+                                Style="{StaticResource BotonPrincipal}"
+                                Command="{Binding GuardarCommand}"/>
+                    </StackPanel>
+                </Grid>
+
+                <DataGrid Grid.Row="2"
+                          ItemsSource="{Binding Especialistas}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding NombreCompleto}" Width="*"/>
+                        <DataGridTextColumn Header="Especialidad" Binding="{Binding Especialidad}" Width="*"/>
+                        <DataGridTextColumn Header="Graduado en / registro" Binding="{Binding GraduadoEn}" Width="*"/>
+                        <DataGridTextColumn Header="Usuario" Binding="{Binding NombreUsuario}" Width="*"/>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding EstadoUsuarioTexto}" Width="100"/>
+
+                        <DataGridTemplateColumn Header="Acciones" Width="180">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Editar"
+                                                Width="70"
+                                                Margin="0,0,6,0"
+                                                Command="{Binding DataContext.SeleccionarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"/>
+
+                                        <Button Content="Desactivar"
+                                                Width="90"
+                                                Command="{Binding DataContext.DesactivarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="8"
+                Padding="16"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="Especialistas registrados"
+                           Style="{StaticResource Titulo}"
+                           Margin="0,0,0,14"/>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Especialistas}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="280"
+                                        MinHeight="150"
+                                        Background="#FAFAFA"
+                                        BorderBrush="#E5E7EB"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Padding="16"
+                                        Margin="0,0,14,14">
+
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding NombreCompleto}"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"
+                                                   Foreground="#171D67"
+                                                   TextWrapping="Wrap"/>
+
+                                        <TextBlock Text="{Binding Especialidad}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#555"
+                                                   Margin="0,8,0,0"
+                                                   TextWrapping="Wrap"/>
+
+                                        <TextBlock Text="{Binding GraduadoEn}"
+                                                   Foreground="#777"
+                                                   FontSize="12"
+                                                   Margin="0,6,0,0"
+                                                   TextWrapping="Wrap"/>
+
+                                        <Border Background="#EEF2FF"
+                                                CornerRadius="6"
+                                                Padding="8"
+                                                Margin="0,12,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding NombreUsuario, StringFormat=Usuario: {0}}"
+                                                           Foreground="#171D67"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="12"/>
+
+                                                <TextBlock Text="{Binding EstadoUsuarioTexto, StringFormat=Estado: {0}}"
+                                                           Foreground="#555"
+                                                           FontSize="12"
+                                                           Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

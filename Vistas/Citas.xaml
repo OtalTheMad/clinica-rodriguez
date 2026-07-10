@@ -1,0 +1,224 @@
+﻿<UserControl x:Class="ClinicaRodriguez.Vistas.Citas"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+    <UserControl.Resources>
+        <Style x:Key="Titulo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#171D67"/>
+        </Style>
+        <Style x:Key="LabelCampo" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+        <Style x:Key="CajaTexto" TargetType="TextBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#D0D5DD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style x:Key="BotonPrincipal" TargetType="Button">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Background" Value="#171D67"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#F3F5F9" Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="White"
+                CornerRadius="8"
+                Padding="14"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                Margin="0,0,0,14">
+            <DockPanel LastChildFill="True">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <Button Content="← Semana"
+                            Command="{Binding SemanaAnteriorCommand}"
+                            Height="34"
+                            Padding="12,0"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Hoy"
+                            Command="{Binding SemanaActualCommand}"
+                            Height="34"
+                            Padding="12,0"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Semana →"
+                            Command="{Binding SemanaSiguienteCommand}"
+                            Height="34"
+                            Padding="12,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Especialista:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+                    <TextBlock Text="{Binding EspecialistaActivoTexto}"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"
+                           Foreground="#171D67"/>
+                </StackPanel>
+
+                <TextBlock Text="{Binding TituloSemana}"
+                           Style="{StaticResource Titulo}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="White"
+                    CornerRadius="8"
+                    Padding="16"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    Margin="0,0,14,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Nueva cita"
+                                   Style="{StaticResource Titulo}"
+                                   Margin="0,0,0,16"/>
+
+                        <TextBlock Text="Buscar paciente" Style="{StaticResource LabelCampo}"/>
+                        <DockPanel Margin="0,0,0,10">
+                            <Button DockPanel.Dock="Right"
+                                    Content="Buscar"
+                                    Width="80"
+                                    Margin="8,0,0,0"
+                                    Command="{Binding BuscarPacienteCommand}"/>
+                            <TextBox Text="{Binding FiltroPaciente, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource CajaTexto}"/>
+                        </DockPanel>
+
+                        <DataGrid ItemsSource="{Binding PacientesEncontrados}"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  IsReadOnly="True"
+                                  Height="150"
+                                  Margin="0,0,0,12">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Paciente" Binding="{Binding Nombre}" Width="*"/>
+                                <DataGridTemplateColumn Header="Usar" Width="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Usar"
+                                                    Command="{Binding DataContext.SeleccionarPacienteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <TextBlock Text="{Binding PacienteSeleccionadoTexto}"
+                                   FontWeight="SemiBold"
+                                   Foreground="#171D67"
+                                   Margin="0,0,0,14"/>
+
+                        <TextBlock Text="Fecha" Style="{StaticResource LabelCampo}"/>
+                        <DatePicker SelectedDate="{Binding FechaCitaSeleccionada, Mode=TwoWay}"
+                                    Height="32"
+                                    Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Hora" Style="{StaticResource LabelCampo}"/>
+                        <ComboBox ItemsSource="{Binding HorasDisponibles}"
+                              SelectedItem="{Binding HoraCitaTexto, Mode=TwoWay}"
+                              Height="32"
+                              Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Duración en minutos" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding DuracionTexto, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"
+                                 Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Notas iniciales" Style="{StaticResource LabelCampo}"/>
+                        <TextBox Text="{Binding NotasNuevaCita, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="90"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 Padding="8"
+                                 Margin="0,0,0,14"/>
+
+                        <Button Content="Crear cita"
+                                Style="{StaticResource BotonPrincipal}"
+                                Command="{Binding CrearCitaCommand}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Background="White"
+                    CornerRadius="8"
+                    Padding="12"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1">
+                <ItemsControl ItemsSource="{Binding DiasCalendario}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="7"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    Margin="4"
+                                    Padding="8"
+                                    Background="#FAFAFA"
+                                    MinHeight="520">
+                                <DockPanel LastChildFill="True">
+                                    <TextBlock DockPanel.Dock="Top"
+                                               Text="{Binding Titulo}"
+                                               FontWeight="Bold"
+                                               Foreground="#171D67"
+                                               Margin="0,0,0,8"
+                                               TextAlignment="Center"/>
+                                    <ItemsControl ItemsSource="{Binding Citas}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Margin="0,0,0,8"
+                                                        Padding="6"
+                                                        HorizontalContentAlignment="Stretch"
+                                                        Command="{Binding DataContext.AbrirCitaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding HoraCita}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding NombreCompletoPaciente}" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{Binding Estado}" Foreground="#555"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,73 @@
+﻿<Window x:Class="ClinicaRodriguez.Vistas.CitaDetallePopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Detalle de cita"
+        Height="520"
+        Width="700"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F3F5F9">
+    <Grid Margin="18">
+        <Border Background="White"
+                CornerRadius="8"
+                Padding="18"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="{Binding Cita.NombreCompletoPaciente}"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="#171D67"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="{Binding Cita.FechaCita, StringFormat=Fecha: {0:dd/MM/yyyy hh:mm tt}}"
+                           Foreground="#555"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="{Binding Cita.NombreCompletoEspecialista, StringFormat=Especialista: {0}}"
+                           Foreground="#555"
+                           Margin="0,0,0,14"/>
+
+                <TextBlock Text="Estado"
+                           FontWeight="SemiBold"
+                           Foreground="#555"
+                           Margin="0,0,0,4"/>
+                <ComboBox ItemsSource="{Binding EstadosDisponibles}"
+                          SelectedItem="{Binding EstadoSeleccionado, Mode=TwoWay}"
+                          Height="34"
+                          Margin="0,0,0,12"/>
+
+                <TextBlock Text="Notas"
+                           FontWeight="SemiBold"
+                           Foreground="#555"
+                           Margin="0,0,0,4"/>
+                <TextBox Text="{Binding Notas, UpdateSourceTrigger=PropertyChanged}"
+                         Height="140"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Padding="8"
+                         Margin="0,0,0,16"/>
+
+                <WrapPanel HorizontalAlignment="Right"
+                   Margin="0,8,0,0">
+                <Button Content="Guardar"
+                    Width="110"
+                    Height="36"
+                    Margin="0,0,8,8"
+                    Command="{Binding GuardarCommand}"/>
+
+                <Button Content="Abrir expediente"
+                    Width="150"
+                    Height="36"
+                    Margin="0,0,8,8"
+                    Command="{Binding AbrirExpedienteCommand}"/>
+
+                <Button Content="Cerrar"
+                    Width="100"
+                    Height="36"
+                    Margin="0,0,0,8"
+                    Command="{Binding CerrarCommand}"/>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

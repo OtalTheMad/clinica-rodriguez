@@ -24,7 +24,15 @@
         <DataTemplate DataType="{x:Type VistaModelos:PacienteFormularioVM}">
             <vistas:PacienteFormulario/>
         </DataTemplate>
-        
+
+        <DataTemplate DataType="{x:Type VistaModelos:CitasVM}">
+            <vistas:Citas/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type VistaModelos:EspecialistasVM}">
+            <vistas:Especialistas/>
+        </DataTemplate>
+
     </Window.Resources>
     
     
@@ -59,8 +67,8 @@
 
             <Button Content="Pacientes" Command="{Binding NavigateCommand}" CommandParameter="Pacientes" Margin="10,15,10,5" Height="41" Width="176"/>
             <Button Content="Nuevo paciente" Command="{Binding NavigateCommand}" CommandParameter="NuevoPaciente" Margin="10,5,10,5" Height="41" Width="176"/>
-            <Button Content="Citas" Margin="10,5,10,5" Height="41" Width="176"/>
-            <Button Content="Especialistas" Margin="10,5,10,5" Height="41" Width="176"/>
+            <Button Content="Citas" Command="{Binding NavigateCommand}" CommandParameter="Citas" Margin="10,5,10,5" Height="41" Width="176"/>
+            <Button Content="Especialistas" Command="{Binding NavigateCommand}" CommandParameter="Especialistas" Margin="10,5,10,5" Height="41" Width="176"/>
             <Button Content="Expedientes" Command="{Binding NavigateCommand}" CommandParameter="Expedientes" Margin="10,5,10,5" Height="41" Width="176"/>
 
             <Separator Background="#FF4A4B7F" Height="1" Margin="0,20,0,0"/>

@@ -68,8 +68,8 @@ namespace ClinicaRodriguez.VistaModelos
                 "Pacientes" => CrearPacientesVM(),
                 "NuevoPaciente" => CrearPacienteFormularioVM(),
                 "Expedientes" => new ExpedientesVM(UsuarioActual, _connectionString),
-                "Citas" => null,
-                "Especialistas" => null,
+                "Citas" => new CitasVM(UsuarioActual, _connectionString, AbrirExpedienteDePaciente),
+                "Especialistas" => new EspecialistasVM(UsuarioActual, _connectionString),
                 _ => null
             };
         }
