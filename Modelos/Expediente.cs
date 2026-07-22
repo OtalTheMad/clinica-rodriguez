@@ -15,6 +15,8 @@ namespace ClinicaRodriguez.Modelos
         public decimal? Talla { get; set; }
         public decimal? IndiceMasaCorporal { get; set; }
         public string NotasHistorial { get; set; } = string.Empty;
+        public string AntecedentesPatologicosFamiliares { get; set; }
+        public string MotivoConsulta { get; set; }
         public string Odontograma { get; set; } = string.Empty;
         public string TipoMordida { get; set; } = string.Empty;
         public string EnfermedadesPeridontales { get; set; } = string.Empty;

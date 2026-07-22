@@ -29,6 +29,8 @@ namespace ClinicaRodriguez.Repositorios
                     Talla,
                     IndiceMasaCorporal,
                     NotasHistorial,
+                    AntecedentesPatologicosFamiliares,
+                    MotivoConsulta,
                     Odontograma,
                     TipoMordida,
                     EnfermedadesPeridontales,
@@ -92,6 +94,8 @@ namespace ClinicaRodriguez.Repositorios
                     Talla,
                     IndiceMasaCorporal,
                     NotasHistorial,
+                    AntecedentesPatologicosFamiliares,
+                    MotivoConsulta,
                     Odontograma,
                     TipoMordida,
                     EnfermedadesPeridontales,
@@ -113,6 +117,8 @@ namespace ClinicaRodriguez.Repositorios
                     @Talla,
                     @IndiceMasaCorporal,
                     @NotasHistorial,
+                    @AntecedentesPatologicosFamiliares,
+                    @MotivoConsulta,
                     @Odontograma,
                     @TipoMordida,
                     @EnfermedadesPeridontales,
@@ -166,6 +172,8 @@ namespace ClinicaRodriguez.Repositorios
             comando.Parameters.AddWithValue("@Talla", ValorONull(expediente.Talla));
             comando.Parameters.AddWithValue("@IndiceMasaCorporal", ValorONull(expediente.IndiceMasaCorporal));
             comando.Parameters.AddWithValue("@NotasHistorial", ValorONull(expediente.NotasHistorial));
+            comando.Parameters.AddWithValue("@AntecedentesPatologicosFamiliares", ValorONull(expediente.AntecedentesPatologicosFamiliares));
+            comando.Parameters.AddWithValue("@MotivoConsulta", ValorONull(expediente.MotivoConsulta));
             comando.Parameters.AddWithValue("@ModificadoPor", ValorONull(expediente.ModificadoPor));
 
             await conexion.OpenAsync();
@@ -186,6 +194,8 @@ namespace ClinicaRodriguez.Repositorios
                     Talla = @Talla,
                     IndiceMasaCorporal = @IndiceMasaCorporal,
                     NotasHistorial = @NotasHistorial,
+                    AntecedentesPatologicosFamiliares = @AntecedentesPatologicosFamiliares,
+                    MotivoConsulta = @MotivoConsulta,
                     Odontograma = @Odontograma,
                     TipoMordida = @TipoMordida,
                     EnfermedadesPeridontales = @EnfermedadesPeridontales,
@@ -218,6 +228,8 @@ namespace ClinicaRodriguez.Repositorios
             comando.Parameters.AddWithValue("@Talla", ValorONull(expediente.Talla));
             comando.Parameters.AddWithValue("@IndiceMasaCorporal", ValorONull(expediente.IndiceMasaCorporal));
             comando.Parameters.AddWithValue("@NotasHistorial", ValorONull(expediente.NotasHistorial));
+            comando.Parameters.AddWithValue("@AntecedentesPatologicosFamiliares", ValorONull(expediente.AntecedentesPatologicosFamiliares));
+            comando.Parameters.AddWithValue("@MotivoConsulta", ValorONull(expediente.MotivoConsulta));
             comando.Parameters.AddWithValue("@Odontograma", ValorONull(expediente.Odontograma));
             comando.Parameters.AddWithValue("@TipoMordida", ValorONull(expediente.TipoMordida));
             comando.Parameters.AddWithValue("@EnfermedadesPeridontales", ValorONull(expediente.EnfermedadesPeridontales));
@@ -240,6 +252,8 @@ namespace ClinicaRodriguez.Repositorios
                 Talla = ObtenerDecimalNullable(reader, "Talla"),
                 IndiceMasaCorporal = ObtenerDecimalNullable(reader, "IndiceMasaCorporal"),
                 NotasHistorial = ObtenerString(reader, "NotasHistorial"),
+                AntecedentesPatologicosFamiliares = ObtenerString(reader, "AntecedentesPatologicosFamiliares"),
+                MotivoConsulta = ObtenerString(reader, "MotivoConsulta"),
                 Odontograma = ObtenerString(reader, "Odontograma"),
                 TipoMordida = ObtenerString(reader, "TipoMordida"),
                 EnfermedadesPeridontales = ObtenerString(reader, "EnfermedadesPeridontales"),

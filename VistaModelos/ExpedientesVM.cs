@@ -34,6 +34,7 @@ namespace ClinicaRodriguez.VistaModelos
         public ObservableCollection<Paciente> PacientesEncontrados { get; set; }
         public ObservableCollection<DocumentoAdjunto> DocumentosAdjuntos { get; set; }
         public ObservableCollection<Cita> HistorialCitas { get; set; }
+        public ObservableCollection<ServicioExpedienteOpcion> ServiciosDisponibles { get; set; }
 
         private Paciente _pacienteSeleccionado;
         public Paciente PacienteSeleccionado
@@ -176,6 +177,12 @@ namespace ClinicaRodriguez.VistaModelos
         public ICommand EliminarDocumentoCommand { get; }
         public ICommand SalirCommand { get; }
 
+        public class ServicioExpedienteOpcion
+        {
+            public string Valor { get; set; }
+            public string Texto { get; set; }
+        }
+
         public ExpedientesVM(Usuario usuarioActual, string connectionString)
             : this(usuarioActual, connectionString, null)
         {
@@ -195,6 +202,19 @@ namespace ClinicaRodriguez.VistaModelos
             PacientesEncontrados = new ObservableCollection<Paciente>();
             DocumentosAdjuntos = new ObservableCollection<DocumentoAdjunto>();
             HistorialCitas = new ObservableCollection<Cita>();
+            ServiciosDisponibles = new ObservableCollection<ServicioExpedienteOpcion>
+{
+            new ServicioExpedienteOpcion
+            {
+                Valor = "ConsultaGeneral",
+                Texto = "Consulta General"
+            },
+            new ServicioExpedienteOpcion
+            {
+                Valor = "Odontologia",
+                Texto = "Odontología"
+            }
+        };
 
             BuscarPacienteCommand = new AsyncRelayCommand(async _ => await BuscarPacientesAsync());
             AsociarPacienteCommand = new RelayCommand<Paciente>(AsociarPaciente);
