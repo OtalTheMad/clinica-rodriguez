@@ -293,7 +293,12 @@
 
                                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,10">
                                     <TextBlock Text="Servicio" Style="{StaticResource LabelCampo}"/>
-                                    <TextBox Text="{Binding ExpedienteSeleccionado.Servicio, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CajaTexto}" TabIndex="16"/>
+                                    <ComboBox ItemsSource="{Binding ServiciosDisponibles}"
+                                      SelectedValue="{Binding ExpedienteSeleccionado.Servicio, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Valor"
+                                      DisplayMemberPath="Texto"
+                                      Height="32"
+                                      Margin="0,0,0,8"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,12,10">
@@ -331,6 +336,27 @@
                                     <TextBox Text="{Binding IMCTexto, Mode=OneWay}" Style="{StaticResource CajaTexto}" IsReadOnly="True"/>
                                 </StackPanel>
                             </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border x:Name="SeccionMotivoConsulta"
+                            Background="White"
+                            CornerRadius="8"
+                            Padding="16"
+                            Margin="0,14,0,0"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Motivo de consulta"
+                                Style="{StaticResource TituloSeccion}"
+                                Margin="0,0,0,12"/>
+                            <TextBox Text="{Binding ExpedienteSeleccionado.MotivoConsulta, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource CajaTexto}"
+                                Height="120"
+                                TextWrapping="Wrap"
+                                AcceptsReturn="True"
+                                VerticalScrollBarVisibility="Auto"
+                                VerticalContentAlignment="Top"/>
                         </StackPanel>
                     </Border>
 
@@ -395,6 +421,18 @@
                             BorderBrush="#E5E7EB"
                             BorderThickness="1">
                         <StackPanel>
+                            <TextBlock Text="Antecedentes patológicos o familiares"
+                                Style="{StaticResource LabelCampo}"/>
+
+                            <TextBox Text="{Binding ExpedienteSeleccionado.AntecedentesPatologicosFamiliares, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource CajaTexto}"
+                                 Height="110"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 VerticalContentAlignment="Top"
+                                 Margin="0,0,0,12"/>
+
                             <TextBlock Text="Notas del historial" Style="{StaticResource TituloSeccion}"/>
                             <TextBox Text="{Binding ExpedienteSeleccionado.NotasHistorial, UpdateSourceTrigger=PropertyChanged}"
                                      Height="120"
