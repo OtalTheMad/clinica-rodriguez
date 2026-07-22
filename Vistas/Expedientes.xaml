@@ -522,55 +522,69 @@
                         <ItemsControl ItemsSource="{Binding HistorialCitas}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#FAFAFA"
-                                BorderBrush="#E5E7EB"
-                                BorderThickness="1"
-                                CornerRadius="8"
-                                Padding="12"
-                                Margin="0,0,0,10">
+                                    <Button Background="Transparent"
+                BorderThickness="0"
+                Padding="0"
+                Margin="0,0,0,10"
+                HorizontalContentAlignment="Stretch"
+                Cursor="Hand"
+                ToolTip="Abrir detalles de la cita"
+                Command="{Binding DataContext.AbrirCitaHistorialCommand,
+                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
+                CommandParameter="{Binding}">
 
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,8">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
+                                        <Border Background="#FAFAFA"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="12">
 
-                                                <TextBlock Grid.Column="0"
-                                               Text="{Binding FechaCita, StringFormat={}{0:dd/MM/yyyy hh:mm tt}}"
-                                               Foreground="#171D67"
-                                               FontWeight="Bold"
-                                               TextWrapping="Wrap"/>
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                <Border Grid.Column="1"
-                                            Background="#EEF2FF"
-                                            CornerRadius="6"
-                                            Padding="8,3"
-                                            Margin="8,0,0,0">
-                                                    <TextBlock Text="{Binding Estado}"
-                                                   Foreground="#171D67"
-                                                   FontSize="12"
-                                                   FontWeight="SemiBold"/>
-                                                </Border>
-                                            </Grid>
+                                                    <TextBlock Grid.Column="0"
+                                   Text="{Binding FechaCita,
+                                                  StringFormat={}{0:dd/MM/yyyy hh:mm tt}}"
+                                   Foreground="#171D67"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"/>
 
-                                            <TextBlock Text="{Binding Duracion, StringFormat={}{0} minutos}"
-                                           Foreground="#555"
-                                           FontSize="12"
-                                           Margin="0,0,0,6"/>
+                                                    <Border Grid.Column="1"
+                                Background="#EEF2FF"
+                                CornerRadius="6"
+                                Padding="8,3"
+                                Margin="8,0,0,0">
 
-                                            <TextBlock Text="Notas"
-                                           Foreground="#555"
-                                           FontWeight="SemiBold"
-                                           FontSize="12"
-                                           Margin="0,0,0,2"/>
+                                                        <TextBlock Text="{Binding Estado}"
+                                       Foreground="#171D67"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"/>
+                                                    </Border>
+                                                </Grid>
 
-                                            <TextBlock Text="{Binding Notas}"
-                                           Foreground="#333"
-                                           TextWrapping="Wrap"
-                                           FontSize="12"/>
-                                        </StackPanel>
-                                    </Border>
+                                                <TextBlock Text="{Binding Duracion,
+                                              StringFormat={}{0} minutos}"
+                               Foreground="#555"
+                               FontSize="12"
+                               Margin="0,0,0,6"/>
+
+                                                <TextBlock Text="Notas"
+                               Foreground="#555"
+                               FontWeight="SemiBold"
+                               FontSize="12"
+                               Margin="0,0,0,2"/>
+
+                                                <TextBlock Text="{Binding Notas}"
+                               Foreground="#333"
+                               TextWrapping="Wrap"
+                               FontSize="12"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Button>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

@@ -2,6 +2,7 @@ using ClinicaRodriguez.Commands;
 using ClinicaRodriguez.Helpers;
 using ClinicaRodriguez.Modelos;
 using ClinicaRodriguez.Repositorios;
+using ClinicaRodriguez.Vistas;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
@@ -175,6 +176,7 @@ namespace ClinicaRodriguez.VistaModelos
         public ICommand AdjuntarDocumentoCommand { get; }
         public ICommand AbrirDocumentoCommand { get; }
         public ICommand EliminarDocumentoCommand { get; }
+        public ICommand AbrirCitaHistorialCommand { get; }
         public ICommand SalirCommand { get; }
 
         public class ServicioExpedienteOpcion
@@ -223,6 +225,7 @@ namespace ClinicaRodriguez.VistaModelos
             AbrirDocumentoCommand = new RelayCommand<DocumentoAdjunto>(AbrirDocumento);
             EliminarDocumentoCommand = new AsyncRelayCommand(async documento => await EliminarDocumentoAsync(documento as DocumentoAdjunto));
             SalirCommand = new RelayCommand<object>(_ => SalirDelExpediente());
+            AbrirCitaHistorialCommand = new AsyncRelayCommand(async cita => await AbrirCitaHistorialAsync(cita as Cita));
 
             if (paciente != null)
             {
@@ -291,10 +294,8 @@ namespace ClinicaRodriguez.VistaModelos
 
         private void AsociarPaciente(Paciente paciente)
         {
-            if (paciente == null)
+            if (paciente == null || paciente.Id <= 0)
                 return;
-
-            PacienteSeleccionado = paciente;
 
             _ = CargarExpedientePorPacienteAsync(paciente);
         }
@@ -303,15 +304,33 @@ namespace ClinicaRodriguez.VistaModelos
         {
             try
             {
-                if (paciente == null)
+                if (paciente == null || paciente.Id <= 0)
                     return;
 
                 EstaCargando = true;
 
-                string servicio = EsOdontologo ? "Odontologia" : "ConsultaGeneral";
+                var pacienteCompleto = await _pacienteRepositorio.ObtenerPorIdAsync(paciente.Id);
+
+                if (pacienteCompleto == null)
+                {
+                    MessageBox.Show(
+                        "No se encontró la información completa del paciente.",
+                        "Paciente no encontrado",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+
+                    return;
+                }
+
+                PacienteSeleccionado = pacienteCompleto;
+
+                string servicio = EsOdontologo
+                    ? "Odontologia"
+                    : "ConsultaGeneral";
 
                 ExpedienteSeleccionado = await _expedienteRepositorio.ObtenerOCrearPorPacienteIdAsync(
-                    paciente.Id,
+                    pacienteCompleto.Id,
                     _usuarioActual.ID,
                     servicio
                 );
@@ -321,7 +340,12 @@ namespace ClinicaRodriguez.VistaModelos
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar el expediente: {ex.Message}");
+                MessageBox.Show(
+                    $"Error al cargar el expediente: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
             }
             finally
             {
@@ -523,6 +547,38 @@ namespace ClinicaRodriguez.VistaModelos
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar historial de citas: {ex.Message}");
+            }
+        }
+
+        private async Task AbrirCitaHistorialAsync(Cita cita)
+        {
+            if (cita == null)
+                return;
+
+            try
+            {
+                var popup = new CitaDetallePopup();
+
+                var vistaModelo = new CitaDetalleVM(
+                    cita,
+                    _citaRepositorio,
+                    paciente =>
+                    {
+                        if (paciente != null)
+                            AsociarPaciente(paciente);
+                    },
+                    () => popup.Close()
+                );
+
+                popup.DataContext = vistaModelo;
+                popup.Owner = Application.Current.MainWindow;
+                popup.ShowDialog();
+
+                await CargarHistorialCitasAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir la cita: {ex.Message}");
             }
         }
 
