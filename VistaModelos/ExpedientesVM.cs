@@ -26,6 +26,7 @@ namespace ClinicaRodriguez.VistaModelos
         private readonly DocumentoAdjuntoRepositorio _documentoAdjuntoRepositorio;
         private readonly CitaRepositorio _citaRepositorio;
         private readonly EspecialistaRepositorio _especialistaRepositorio;
+        private readonly NotaClinicaRepositorio _notaClinicaRepositorio;
 
         private string _temperaturaTexto;
         private string _pesoTexto;
@@ -35,6 +36,7 @@ namespace ClinicaRodriguez.VistaModelos
         public ObservableCollection<Paciente> PacientesEncontrados { get; set; }
         public ObservableCollection<DocumentoAdjunto> DocumentosAdjuntos { get; set; }
         public ObservableCollection<Cita> HistorialCitas { get; set; }
+        public ObservableCollection<NotaClinica> NotasClinicas { get; set; }
         public ObservableCollection<ServicioExpedienteOpcion> ServiciosDisponibles { get; set; }
 
         private Paciente _pacienteSeleccionado;
@@ -173,6 +175,7 @@ namespace ClinicaRodriguez.VistaModelos
         public ICommand BuscarPacienteCommand { get; }
         public ICommand AsociarPacienteCommand { get; }
         public ICommand GuardarExpedienteCommand { get; }
+        public ICommand GuardarNotaClinicaCommand { get; }
         public ICommand AdjuntarDocumentoCommand { get; }
         public ICommand AbrirDocumentoCommand { get; }
         public ICommand EliminarDocumentoCommand { get; }
@@ -200,10 +203,12 @@ namespace ClinicaRodriguez.VistaModelos
             _documentoAdjuntoRepositorio = new DocumentoAdjuntoRepositorio(_connectionString);
             _citaRepositorio = new CitaRepositorio(_connectionString);
             _especialistaRepositorio = new EspecialistaRepositorio(_connectionString);
+            _notaClinicaRepositorio = new NotaClinicaRepositorio(_connectionString);
 
             PacientesEncontrados = new ObservableCollection<Paciente>();
             DocumentosAdjuntos = new ObservableCollection<DocumentoAdjunto>();
             HistorialCitas = new ObservableCollection<Cita>();
+            NotasClinicas = new ObservableCollection<NotaClinica>();
             ServiciosDisponibles = new ObservableCollection<ServicioExpedienteOpcion>
 {
             new ServicioExpedienteOpcion
@@ -226,6 +231,8 @@ namespace ClinicaRodriguez.VistaModelos
             EliminarDocumentoCommand = new AsyncRelayCommand(async documento => await EliminarDocumentoAsync(documento as DocumentoAdjunto));
             SalirCommand = new RelayCommand<object>(_ => SalirDelExpediente());
             AbrirCitaHistorialCommand = new AsyncRelayCommand(async cita => await AbrirCitaHistorialAsync(cita as Cita));
+            GuardarNotaClinicaCommand = new AsyncRelayCommand(async _ => await GuardarNotaClinicaAsync()
+    );
 
             if (paciente != null)
             {
@@ -337,6 +344,7 @@ namespace ClinicaRodriguez.VistaModelos
 
                 await CargarDocumentosAdjuntosAsync();
                 await CargarHistorialCitasAsync();
+                await CargarNotasClinicasAsync();
             }
             catch (Exception ex)
             {
@@ -356,6 +364,139 @@ namespace ClinicaRodriguez.VistaModelos
         private async Task GuardarExpedienteAsync()
         {
             await GuardarExpedienteInternoAsync(true);
+        }
+
+        private async Task CargarNotasClinicasAsync()
+        {
+            try
+            {
+                NotasClinicas.Clear();
+
+                if (ExpedienteSeleccionado == null ||
+                    ExpedienteSeleccionado.Id <= 0)
+                {
+                    return;
+                }
+
+                var notas =
+                    await _notaClinicaRepositorio
+                        .ObtenerPorExpedienteIdAsync(
+                            ExpedienteSeleccionado.Id
+                        );
+
+                foreach (var nota in notas)
+                {
+                    NotasClinicas.Add(nota);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error al cargar el historial clínico: {ex.Message}"
+                );
+            }
+        }
+
+        private async Task GuardarNotaClinicaAsync()
+        {
+            try
+            {
+                if (PacienteSeleccionado == null)
+                {
+                    MessageBox.Show(
+                        "Debe seleccionar un paciente."
+                    );
+
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(MotivoConsultaNota))
+                {
+                    MessageBox.Show(
+                        "Ingrese el motivo de la consulta."
+                    );
+
+                    return;
+                }
+
+                if (ExpedienteSeleccionado == null)
+                {
+                    MessageBox.Show(
+                        "No hay un expediente activo."
+                    );
+
+                    return;
+                }
+
+                EstaCargando = true;
+
+                /*
+                 * Si por alguna razón el expediente todavía
+                 * no ha sido guardado, lo guardamos primero.
+                 */
+                if (ExpedienteSeleccionado.Id == 0)
+                {
+                    bool guardado =
+                        await GuardarExpedienteInternoAsync(false);
+
+                    if (!guardado)
+                        return;
+                }
+
+                var nota = new NotaClinica
+                {
+                    ExpedienteId = ExpedienteSeleccionado.Id,
+
+                    // Por ahora puede quedar sin cita asociada.
+                    CitaId = null,
+
+                    FechaNota = DateTime.Now,
+
+                    MotivoConsulta =
+                        MotivoConsultaNota.Trim(),
+
+                    Diagnostico =
+                        DiagnosticoNota,
+
+                    Tratamiento =
+                        TratamientoNota,
+
+                    Indicaciones =
+                        IndicacionesNota,
+
+                    CreadoPor =
+                        _usuarioActual.ID
+                };
+
+                nota.Id =
+                    await _notaClinicaRepositorio
+                        .CrearAsync(nota);
+
+                LimpiarNotaClinica();
+
+                await CargarNotasClinicasAsync();
+
+                MessageBox.Show(
+                    "Nota clínica guardada correctamente."
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error al guardar la nota clínica: {ex.Message}"
+                );
+            }
+            finally
+            {
+                EstaCargando = false;
+            }
+        }
+        private void LimpiarNotaClinica()
+        {
+            MotivoConsultaNota = string.Empty;
+            DiagnosticoNota = string.Empty;
+            TratamientoNota = string.Empty;
+            IndicacionesNota = string.Empty;
         }
 
         private async Task<bool> GuardarExpedienteInternoAsync(bool mostrarMensaje)
@@ -674,6 +815,7 @@ namespace ClinicaRodriguez.VistaModelos
             PacientesEncontrados.Clear();
             DocumentosAdjuntos.Clear();
             HistorialCitas.Clear();
+            LimpiarNotaClinica();
 
             OnPropertyChanged(nameof(NumeroExpediente));
         }
@@ -701,6 +843,54 @@ namespace ClinicaRodriguez.VistaModelos
             ExpedienteSeleccionado.Talla = ConvertirDecimalFlexible(TallaTexto);
 
             CalcularIMC();
+        }
+
+        private string _motivoConsultaNota;
+
+        public string MotivoConsultaNota
+        {
+            get => _motivoConsultaNota;
+            set
+            {
+                _motivoConsultaNota = value;
+                OnPropertyChanged(nameof(MotivoConsultaNota));
+            }
+        }
+
+        private string _diagnosticoNota;
+
+        public string DiagnosticoNota
+        {
+            get => _diagnosticoNota;
+            set
+            {
+                _diagnosticoNota = value;
+                OnPropertyChanged(nameof(DiagnosticoNota));
+            }
+        }
+
+        private string _tratamientoNota;
+
+        public string TratamientoNota
+        {
+            get => _tratamientoNota;
+            set
+            {
+                _tratamientoNota = value;
+                OnPropertyChanged(nameof(TratamientoNota));
+            }
+        }
+
+        private string _indicacionesNota;
+
+        public string IndicacionesNota
+        {
+            get => _indicacionesNota;
+            set
+            {
+                _indicacionesNota = value;
+                OnPropertyChanged(nameof(IndicacionesNota));
+            }
         }
 
         private void CalcularIMC()
