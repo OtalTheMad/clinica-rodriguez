@@ -6,79 +6,379 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:convertidores="clr-namespace:ClinicaRodriguez.Helpers"
              mc:Ignorable="d"
-             d:DesignHeight="450"
-             d:DesignWidth="800">
+             d:DesignHeight="650"
+             d:DesignWidth="1200">
 
     <UserControl.Resources>
         <convertidores:FechaNulaConverter x:Key="FechaNulaConverter"/>
 
         <Style x:Key="EncabezadoGrid" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#FF171D67"/>
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Background" Value="#171D67"/>
             <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#30368A"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        </Style>
+
+        <Style x:Key="CeldaGrid" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+
+        <Style x:Key="FilaGrid" TargetType="DataGridRow">
+            <Setter Property="MinHeight" Value="68"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E8EAF0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="ToolTip" Value="Abrir expediente del paciente"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+
+            <Style.Triggers>
+                <Trigger Property="AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#FAFBFD"/>
+                </Trigger>
+
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F0F2FF"/>
+                </Trigger>
+
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#E4E7FF"/>
+                    <Setter Property="Foreground" Value="#171D67"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextoPrincipalCelda" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#172033"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <Style x:Key="TextoSecundarioCelda" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#667085"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid Background="#F4F6FA">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
-                   Text="Gestión de pacientes"
-                   FontSize="22"
-                   FontWeight="Bold"
-                   Foreground="#FF171D67"
-                   Margin="0,0,0,15"/>
+            <!-- Encabezado -->
+            <Grid Grid.Row="0" Margin="4,0,4,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <TextBox Grid.Row="1"
-                 Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
-                 Width="300"
-                 HorizontalAlignment="Left"
-                 Padding="10,8"
-                 FontSize="14"
-                 Margin="0,0,0,15"/>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Gestión de pacientes"
+                               FontSize="25"
+                               FontWeight="Bold"
+                               Foreground="#171D67"/>
 
-        <DataGrid x:Name="dgPacientes"
-                  Grid.Row="2"
-                  ItemsSource="{Binding Pacientes}"
-                  SelectedItem="{Binding PacienteSeleccionado, Mode=TwoWay}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  CanUserAddRows="False"
-                  CanUserResizeColumns="False"
-                  CanUserReorderColumns="False"
-                  CanUserResizeRows="False"
-                  Background="White"
-                  BorderBrush="#FFE0E0E0"
-                  BorderThickness="1"
-                  GridLinesVisibility="Horizontal"
-                  HorizontalGridLinesBrush="#FFE0E0E0"
-                  RowHeight="40"
-                  ColumnHeaderHeight="45"
-                  HorizontalScrollBarVisibility="Auto"
-                  SelectionMode="Single"
-                  ColumnHeaderStyle="{StaticResource EncabezadoGrid}">
+                    <TextBlock Text="Busca y selecciona un paciente para abrir directamente su expediente."
+                               FontSize="13"
+                               Foreground="#667085"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="Auto"/>
-                <DataGridTextColumn Header="Apellido" Binding="{Binding Apellido}" Width="Auto"/>
-                <DataGridTextColumn Header="DNI" Binding="{Binding DNI}" Width="*"/>
-                <DataGridTextColumn Header="Correo" Binding="{Binding Correo}" Width="Auto"/>
-                <DataGridTextColumn Header="Nacimiento" Binding="{Binding FechaNacimiento, Converter={StaticResource FechaNulaConverter}}" Width="Auto"/>
-                <DataGridTextColumn Header="Edad" Binding="{Binding Edad}" Width="Auto"/>
-                <DataGridTextColumn Header="Residencia" Binding="{Binding Residencia}" Width="*"/>
-                <DataGridTextColumn Header="Ocupación" Binding="{Binding Ocupacion}" Width="Auto"/>
-                <DataGridTextColumn Header="Teléfono" Binding="{Binding TelefonoPrimario}" Width="Auto"/>
-                <DataGridTextColumn Header="Última cita" Binding="{Binding UltimaCita, Converter={StaticResource FechaNulaConverter}}" Width="Auto"/>
-                <DataGridTextColumn Header="Tipo de cita" Binding="{Binding TipoDeCita}" Width="Auto"/>
-                <DataGridTextColumn Header="Próxima cita" Binding="{Binding ProximaCita, Converter={StaticResource FechaNulaConverter}}" Width="Auto"/>
-                <DataGridTextColumn Header="Tipo próxima cita" Binding="{Binding TipoProximaCita}" Width="Auto"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                <Border Grid.Column="1"
+                        Background="#EEF0FF"
+                        CornerRadius="8"
+                        Padding="12,7"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ElementName=dgPacientes,
+                                             Path=Items.Count,
+                                             StringFormat={}{0} pacientes}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#171D67"/>
+                </Border>
+            </Grid>
+
+            <!-- Buscador -->
+            <Border Grid.Row="1"
+                    Background="White"
+                    BorderBrush="#E1E5EC"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="16"
+                    Margin="0,0,0,14">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="420"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="Buscar paciente"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="#344054"
+                               VerticalAlignment="Center"
+                               Margin="0,0,14,0"/>
+
+                    <Border Grid.Column="1"
+                            Height="38"
+                            Background="#F9FAFB"
+                            BorderBrush="#CCD2DC"
+                            BorderThickness="1"
+                            CornerRadius="7">
+
+                        <Grid>
+                            <TextBox x:Name="txtBusqueda"
+                                     Text="{Binding TextoBusqueda,
+                                                    UpdateSourceTrigger=PropertyChanged}"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Padding="12,0"
+                                     FontSize="13"
+                                     Foreground="#172033"
+                                     VerticalContentAlignment="Center"/>
+
+                            <TextBlock Text="Nombre, apellido, DNI o teléfono"
+                                       Margin="13,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="#98A2B3"
+                                       FontSize="12"
+                                       IsHitTestVisible="False">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding ElementName=txtBusqueda, Path=Text}"
+                                                               Value=""/>
+                                                    <Condition Binding="{Binding ElementName=txtBusqueda, Path=IsKeyboardFocusWithin}"
+                                                               Value="False"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Grid.Column="2"
+                               Text="Haz clic en cualquier fila para abrir el expediente."
+                               FontSize="12"
+                               Foreground="#667085"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Right"/>
+                </Grid>
+            </Border>
+
+            <!-- Tabla -->
+            <Border Grid.Row="2"
+                    Background="White"
+                    BorderBrush="#E1E5EC"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    ClipToBounds="True">
+
+                <Grid>
+                    <DataGrid x:Name="dgPacientes"
+                              ItemsSource="{Binding Pacientes}"
+                              SelectedItem="{Binding PacienteSeleccionado, Mode=TwoWay}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserResizeColumns="True"
+                              CanUserReorderColumns="False"
+                              CanUserResizeRows="False"
+                              Background="White"
+                              BorderThickness="0"
+                              GridLinesVisibility="None"
+                              HeadersVisibility="Column"
+                              ColumnHeaderHeight="46"
+                              AlternationCount="2"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              EnableRowVirtualization="True"
+                              EnableColumnVirtualization="True"
+                              ScrollViewer.CanContentScroll="True"
+                              ColumnHeaderStyle="{StaticResource EncabezadoGrid}"
+                              CellStyle="{StaticResource CeldaGrid}"
+                              RowStyle="{StaticResource FilaGrid}">
+
+                        <DataGrid.Columns>
+                            <!-- Paciente -->
+                            <DataGridTemplateColumn Header="PACIENTE"
+                                                    Width="2*"
+                                                    MinWidth="190">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Nombre}"
+                                                           Style="{StaticResource TextoPrincipalCelda}"/>
+                                                <TextBlock Text="{Binding Apellido}"
+                                                           Style="{StaticResource TextoPrincipalCelda}"
+                                                           Margin="4,0,0,0"/>
+                                            </StackPanel>
+
+                                            <TextBlock Style="{StaticResource TextoSecundarioCelda}">
+                                                <Run Text="DNI: "/>
+                                                <Run Text="{Binding DNI}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Contacto -->
+                            <DataGridTemplateColumn Header="CONTACTO"
+                                                    Width="2.2*"
+                                                    MinWidth="210">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding TelefonoPrimario}"
+                                                       Style="{StaticResource TextoPrincipalCelda}"/>
+
+                                            <TextBlock Text="{Binding Correo}"
+                                                       Style="{StaticResource TextoSecundarioCelda}"
+                                                       ToolTip="{Binding Correo}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Información personal -->
+                            <DataGridTemplateColumn Header="INFORMACIÓN"
+                                                    Width="1.35*"
+                                                    MinWidth="145">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Edad, StringFormat={}{0} años}"
+                                                       Style="{StaticResource TextoPrincipalCelda}"/>
+
+                                            <TextBlock Style="{StaticResource TextoSecundarioCelda}">
+                                                <Run Text="Nacimiento: "/>
+                                                <Run Text="{Binding FechaNacimiento,
+                                                                    Converter={StaticResource FechaNulaConverter}}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Ubicación y ocupación -->
+                            <DataGridTemplateColumn Header="UBICACIÓN"
+                                                    Width="1.7*"
+                                                    MinWidth="180">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Residencia}"
+                                                       Style="{StaticResource TextoPrincipalCelda}"
+                                                       ToolTip="{Binding Residencia}"/>
+
+                                            <TextBlock Text="{Binding Ocupacion}"
+                                                       Style="{StaticResource TextoSecundarioCelda}"
+                                                       ToolTip="{Binding Ocupacion}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Última cita -->
+                            <DataGridTemplateColumn Header="ÚLTIMA CITA"
+                                                    Width="1.45*"
+                                                    MinWidth="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding UltimaCita,
+                                                                      Converter={StaticResource FechaNulaConverter}}"
+                                                       Style="{StaticResource TextoPrincipalCelda}"/>
+
+                                            <TextBlock Text="{Binding TipoDeCita}"
+                                                       Style="{StaticResource TextoSecundarioCelda}"
+                                                       ToolTip="{Binding TipoDeCita}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Próxima cita -->
+                            <DataGridTemplateColumn Header="PRÓXIMA CITA"
+                                                    Width="1.45*"
+                                                    MinWidth="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding ProximaCita,
+                                                                      Converter={StaticResource FechaNulaConverter}}"
+                                                       Style="{StaticResource TextoPrincipalCelda}"/>
+
+                                            <TextBlock Text="{Binding TipoProximaCita}"
+                                                       Style="{StaticResource TextoSecundarioCelda}"
+                                                       ToolTip="{Binding TipoProximaCita}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Mensaje cuando no hay registros -->
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsHitTestVisible="False">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=dgPacientes, Path=HasItems}"
+                                                 Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <TextBlock Text="No se encontraron pacientes"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Foreground="#344054"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="Prueba con otro nombre, identidad o teléfono."
+                                   FontSize="12"
+                                   Foreground="#667085"
+                                   Margin="0,6,0,0"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
