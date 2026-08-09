@@ -1,5 +1,6 @@
 ﻿using ClinicaRodriguez.Modelos;
 using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,53 +16,100 @@ public class PacienteRepositorio
     public async Task<int> CrearAsync(Paciente paciente)
     {
         const string query = @"
-        INSERT INTO dbo.Pacientes
-        (
-            Nombre,
-            Apellido,
-            DNI,
-            Correo,
-            FechaNacimiento,
-            Residencia,
-            Ocupacion,
-            TelefonoPrimario,
-            UltimaCita,
-            TipoDeCita,
-            ProximaCita,
-            TipoProximaCita
-        )
-        OUTPUT INSERTED.ID
-        VALUES
-        (
-            @Nombre,
-            @Apellido,
-            @DNI,
-            @Correo,
-            @FechaNacimiento,
-            @Residencia,
-            @Ocupacion,
-            @TelefonoPrimario,
-            @UltimaCita,
-            @TipoDeCita,
-            @ProximaCita,
-            @TipoProximaCita
-        );";
+            INSERT INTO dbo.Pacientes
+            (
+                Nombre,
+                Apellido,
+                DNI,
+                Correo,
+                FechaNacimiento,
+                Residencia,
+                Ocupacion,
+                TelefonoPrimario,
+                UltimaCita,
+                TipoDeCita,
+                ProximaCita,
+                TipoProximaCita
+            )
+            OUTPUT INSERTED.ID
+            VALUES
+            (
+                @Nombre,
+                @Apellido,
+                @DNI,
+                @Correo,
+                @FechaNacimiento,
+                @Residencia,
+                @Ocupacion,
+                @TelefonoPrimario,
+                @UltimaCita,
+                @TipoDeCita,
+                @ProximaCita,
+                @TipoProximaCita
+            );";
 
         using var conexion = new SqlConnection(_connectionString);
         using var comando = new SqlCommand(query, conexion);
 
-        comando.Parameters.AddWithValue("@Nombre", ValorONull(paciente.Nombre));
-        comando.Parameters.AddWithValue("@Apellido", ValorONull(paciente.Apellido));
-        comando.Parameters.AddWithValue("@DNI", ValorONull(paciente.DNI));
-        comando.Parameters.AddWithValue("@Correo", ValorONull(paciente.Correo));
-        comando.Parameters.AddWithValue("@FechaNacimiento", ValorONull(paciente.FechaNacimiento));
-        comando.Parameters.AddWithValue("@Residencia", ValorONull(paciente.Residencia));
-        comando.Parameters.AddWithValue("@Ocupacion", ValorONull(paciente.Ocupacion));
-        comando.Parameters.AddWithValue("@TelefonoPrimario", ValorONull(paciente.TelefonoPrimario));
-        comando.Parameters.AddWithValue("@UltimaCita", ValorONull(paciente.UltimaCita));
-        comando.Parameters.AddWithValue("@TipoDeCita", ValorONull(paciente.TipoDeCita));
-        comando.Parameters.AddWithValue("@ProximaCita", ValorONull(paciente.ProximaCita));
-        comando.Parameters.AddWithValue("@TipoProximaCita", ValorONull(paciente.TipoProximaCita));
+        comando.Parameters.AddWithValue(
+            "@Nombre",
+            ValorONull(paciente.Nombre)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@Apellido",
+            ValorONull(paciente.Apellido)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@DNI",
+            ValorONull(paciente.DNI)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@Correo",
+            ValorONull(paciente.Correo)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@FechaNacimiento",
+            ValorONull(paciente.FechaNacimiento)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@Residencia",
+            ValorONull(paciente.Residencia)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@Ocupacion",
+            ValorONull(paciente.Ocupacion)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@TelefonoPrimario",
+            ValorONull(paciente.TelefonoPrimario)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@UltimaCita",
+            ValorONull(paciente.UltimaCita)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@TipoDeCita",
+            ValorONull(paciente.TipoDeCita)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@ProximaCita",
+            ValorONull(paciente.ProximaCita)
+        );
+
+        comando.Parameters.AddWithValue(
+            "@TipoProximaCita",
+            ValorONull(paciente.TipoProximaCita)
+        );
 
         await conexion.OpenAsync();
 
@@ -70,145 +118,194 @@ public class PacienteRepositorio
         return Convert.ToInt32(idGenerado);
     }
 
-    private static object ValorONull(string valor)
-    {
-        return string.IsNullOrWhiteSpace(valor) ? DBNull.Value : valor.Trim();
-    }
-
-    private static object ValorONull(DateTime fecha)
-    {
-        return fecha == DateTime.MinValue ? DBNull.Value : fecha;
-    }
-
     public async Task<List<Paciente>> ObtenerTodosAsync()
     {
+        const string query = @"
+            SELECT
+                ID,
+                Nombre,
+                Apellido,
+                DNI,
+                Correo,
+                FechaNacimiento,
+                Residencia,
+                Ocupacion,
+                TelefonoPrimario,
+                UltimaCita,
+                TipoDeCita,
+                ProximaCita,
+                TipoProximaCita,
+                Edad
+            FROM dbo.Pacientes
+            ORDER BY Nombre, Apellido;";
+
         var pacientes = new List<Paciente>();
 
-        using (var conn = new SqlConnection(_connectionString))
+        try
         {
-            await conn.OpenAsync();
+            using var conexion = new SqlConnection(_connectionString);
+            using var comando = new SqlCommand(query, conexion);
 
-            var query = @"SELECT 
-	                           ID
-                              ,Nombre
-                              ,Apellido
-                              ,DNI
-                              ,Correo
-                              ,FechaNacimiento
-                              ,Residencia
-                              ,Ocupacion
-                              ,TelefonoPrimario
-                              ,UltimaCita
-                              ,TipoDeCita
-                              ,ProximaCita
-                              ,TipoProximaCita
-                              ,Edad
-                          FROM Pacientes";
+            await conexion.OpenAsync();
 
-            try
+            using var reader = await comando.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var cmd = new SqlCommand(query, conn))
-                {
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var paciente = new Paciente
-                            {
-                                Id = reader.GetInt32(0),
-                                Nombre = reader.GetString(1),
-                                Apellido = reader.GetString(2),
-                                DNI = reader.GetString(3),
-                                Correo = reader.GetString(4),
-                                FechaNacimiento = reader.GetDateTime(5),
-                                Residencia = reader.IsDBNull(6) ? null : reader.GetString(6),
-                                Ocupacion = reader.GetString(7),
-                                TelefonoPrimario = reader.GetString(8),
-                                UltimaCita = reader.IsDBNull(9) ? DateTime.MinValue : reader.GetDateTime(9),
-                                TipoDeCita = reader.IsDBNull(10) ? null : reader.GetString(10),
-                                ProximaCita = reader.IsDBNull(11) ? DateTime.MinValue : reader.GetDateTime(11),
-                                TipoProximaCita = reader.IsDBNull(12) ? null : reader.GetString(12),
-                                Edad = reader.GetInt32(13)
-                            };
-                            pacientes.Add(paciente);
-                        }
-                    }
-                }
+                pacientes.Add(MapearPaciente(reader));
             }
-            catch (SqlException ex)
-            {
-                throw new Exception($"Error de base de datos: {ex.Message}", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error al obtener pacientes: {ex.Message}", ex);
-            }
+
+            return pacientes;
         }
-
-        return pacientes;
+        catch (SqlException ex)
+        {
+            throw new Exception(
+                $"Error de base de datos al obtener los pacientes: {ex.Message}",
+                ex
+            );
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Error al obtener los pacientes: {ex.Message}",
+                ex
+            );
+        }
     }
 
     public async Task<Paciente> ObtenerPorIdAsync(int id)
     {
+        const string query = @"
+            SELECT TOP 1
+                ID,
+                Nombre,
+                Apellido,
+                DNI,
+                Correo,
+                FechaNacimiento,
+                Residencia,
+                Ocupacion,
+                TelefonoPrimario,
+                UltimaCita,
+                TipoDeCita,
+                ProximaCita,
+                TipoProximaCita,
+                Edad
+            FROM dbo.Pacientes
+            WHERE ID = @ID;";
+
         try
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using var conexion = new SqlConnection(_connectionString);
+            using var comando = new SqlCommand(query, conexion);
+
+            comando.Parameters.AddWithValue("@ID", id);
+
+            await conexion.OpenAsync();
+
+            using var reader = await comando.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
             {
-                await conn.OpenAsync();
-
-                var query = @"SELECT 
-	                           ID
-                              ,Nombre
-                              ,Apellido
-                              ,DNI
-                              ,Correo
-                              ,FechaNacimiento
-                              ,Residencia
-                              ,Ocupacion
-                              ,TelefonoPrimario
-                              ,UltimaCita
-                              ,TipoDeCita
-                              ,ProximaCita
-                              ,TipoProximaCita
-                              ,Edad
-                          FROM Pacientes
-                          WHERE Id = @Id";
-
-                using (var cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@ID", id);
-
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return new Paciente
-                            {
-                                Id = reader.GetInt32(0),
-                                Nombre = reader.GetString(1),
-                                Apellido = reader.GetString(2),
-                                DNI = reader.GetString(3),
-                                Correo = reader.GetString(4),
-                                FechaNacimiento = reader.GetDateTime(5),
-                                Residencia = reader.IsDBNull(6) ? null : reader.GetString(6),
-                                Ocupacion = reader.GetString(7),
-                                TelefonoPrimario = reader.GetString(8),
-                                UltimaCita = reader.IsDBNull(9) ? DateTime.MinValue : reader.GetDateTime(9),
-                                TipoDeCita = reader.IsDBNull(10) ? null : reader.GetString(10),
-                                ProximaCita = reader.IsDBNull(11) ? DateTime.MinValue : reader.GetDateTime(11),
-                                TipoProximaCita = reader.IsDBNull(12) ? null : reader.GetString(12),
-                                Edad = reader.GetInt32(13)
-                            };
-                        }
-                    }
-                }
+                return MapearPaciente(reader);
             }
+
+            return null;
         }
         catch (SqlException ex)
         {
-            throw new Exception($"Error de base de datos: {ex.Message}", ex);
+            throw new Exception(
+                $"Error de base de datos al obtener el paciente: {ex.Message}",
+                ex
+            );
         }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Error al obtener el paciente: {ex.Message}",
+                ex
+            );
+        }
+    }
 
-        return null;
+    private static Paciente MapearPaciente(SqlDataReader reader)
+    {
+        return new Paciente
+        {
+            Id = ObtenerInt(reader, "ID"),
+
+            Nombre = ObtenerString(reader, "Nombre"),
+
+            Apellido = ObtenerString(reader, "Apellido"),
+
+            DNI = ObtenerString(reader, "DNI"),
+
+            Correo = ObtenerString(reader, "Correo"),
+
+            FechaNacimiento = ObtenerDateTime(reader, "FechaNacimiento"),
+
+            Residencia = ObtenerString(reader, "Residencia"),
+
+            Ocupacion = ObtenerString(reader, "Ocupacion"),
+
+            TelefonoPrimario = ObtenerString(reader, "TelefonoPrimario"),
+
+            UltimaCita = ObtenerDateTime(reader, "UltimaCita"),
+
+            TipoDeCita = ObtenerString(reader, "TipoDeCita"),
+
+            ProximaCita = ObtenerDateTime(reader, "ProximaCita"),
+
+            TipoProximaCita = ObtenerString(reader, "TipoProximaCita"),
+
+            Edad = ObtenerInt(reader, "Edad")
+        };
+    }
+
+    private static string ObtenerString(
+        SqlDataReader reader,
+        string columna)
+    {
+        int posicion = reader.GetOrdinal(columna);
+
+        return reader.IsDBNull(posicion)
+            ? string.Empty
+            : reader.GetString(posicion);
+    }
+
+    private static int ObtenerInt(
+        SqlDataReader reader,
+        string columna)
+    {
+        int posicion = reader.GetOrdinal(columna);
+
+        return reader.IsDBNull(posicion)
+            ? 0
+            : reader.GetInt32(posicion);
+    }
+
+    private static DateTime ObtenerDateTime(
+        SqlDataReader reader,
+        string columna)
+    {
+        int posicion = reader.GetOrdinal(columna);
+
+        return reader.IsDBNull(posicion)
+            ? DateTime.MinValue
+            : reader.GetDateTime(posicion);
+    }
+
+    private static object ValorONull(string valor)
+    {
+        return string.IsNullOrWhiteSpace(valor)
+            ? DBNull.Value
+            : valor.Trim();
+    }
+
+    private static object ValorONull(DateTime fecha)
+    {
+        return fecha == DateTime.MinValue
+            ? DBNull.Value
+            : fecha;
     }
 }
