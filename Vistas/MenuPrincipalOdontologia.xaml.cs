@@ -17,10 +17,7 @@ namespace ClinicaRodriguez.Vistas
         {
             SesionActual.UsuarioActual = usuario;
 
-            string connectionString = @"Server=localhost;
-                         Database=DevClinicaRodriguez;
-                         Integrated Security=true;
-                         TrustServerCertificate=true;";
+            string connectionString = Conexion.ObtenerConexion();
 
             DataContext = new MenuPrincipalVM(usuario, connectionString);
         }

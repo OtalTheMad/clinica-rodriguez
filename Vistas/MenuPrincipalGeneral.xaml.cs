@@ -14,10 +14,7 @@ namespace ClinicaRodriguez.Vistas
             SesionActual.UsuarioActual = usuario;
             SesionActual.RolId = RolesSistema.ConsultaGeneral;
 
-            string connectionString = @"Server=localhost;
-                         Database=DevClinicaRodriguez;
-                         Integrated Security=true;
-                         TrustServerCertificate=true;";
+            string connectionString = Conexion.ObtenerConexion();
 
             DataContext = new MenuPrincipalVM(usuario, connectionString);
         }
